@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Logic.TechnicalAssement.App.Models.LeaveViewModel>
+
+
+<h1>Leaves Requested</h1>
+
+<div style="height:100px;overflow-y:scroll">
+<table class="table  table-striped" id="leaveslist">
+    
+        <tr>
+            <th>
+                Leave ID
+              
+            </th>
+            <th>
+               LeaveType
+            </th>
+            <th>
+               FirstName
+            </th>
+            <th>
+               LastName
+            </th>
+            <th>
+              Email
+            </th>
+            <th>
+              StartDate
+            </th>
+            <th>
+              EndDate
+            </th>
+            <th>
+              IsHalfDay
+            </th>
+           
+        </tr>
+    
+        @if(Model != null)
+        @foreach (LeaveViewModel lvm in Model)
+        {
+            <tr>
+                
+                <td>@lvm.Id</td>
+                <td>@lvm.LeaveType.ToString()</td>
+                <td>@lvm.FirstName</td>
+                <td>@lvm.LastName</td>
+                <td>@lvm.Email</td>
+                <td>@lvm.StartDate.ToString("dd/MM/yyyy")</td>
+                <td>@lvm.EndDate.ToString("dd/MM/yyyy")</td>
+                <td>@(lvm.IsHalfDay==true ? "Yes" : "No")</td>
+                </tr>
+        }
+   
+</table>
+</div>

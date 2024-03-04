@@ -1,0 +1,224 @@
+﻿@model IEnumerable<Logic.TechnicalAssement.App.Models.LeaveViewModel>
+
+     <div class="row" id="leavesview_partial" >
+                                                
+           
+    @{
+        Html.RenderPartial("_LeavesPartial", Model);
+    }
+
+      
+    </div>
+                                                <div class="row" >
+                                                <h4 style="text-align:center">New Leave Request</h4>
+                                                
+                                                    <div class="form-group row">
+                                                        <label for="leavetypes" class="col-sm-2 col-form-label">Leave Type</label>
+                                                        <div class="col-sm-4">
+                                                           <!-- <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="email@example.com">-->
+
+                                <select class="form-select model-field" asp-items="@(new SelectList(ViewBag.leavetypes,"Value","Text"))" id="Leavetype">
+                                                           <option selected value="">Select</option>
+                                                           </select>
+
+                                                        </div>
+                            <div class="col-sm-4">
+                                <p id="Leavetype-check" class="text-danger"></p>
+                            </div>
+                                                    </div>
+                                                        <div class="form-group row " style="margin-top:10px;">
+                                                            <label for="FirstName" class="col-sm-2 col-form-label">FirstName</label>
+                                                            <div class="col-sm-4 ">
+                                                                <input type="text" class="form-control model-field" id="FirstName" placeholder="Enter First Name">
+                                                        </div>
+                            <div class="col-sm-4">
+                                <p id="FirstName-check" class="text-danger"></p>
+                            </div>
+                                                    </div>
+                                                        <div class="form-group row " style="margin-top:20px;">
+                                                            <label for="LastName" class="col-sm-2 col-form-label">LastName</label>
+                                                        <div class="col-sm-4">
+                                                                <input type="text"  class="form-control model-field" id="LastName" placeholder="Enter Last Name">
+                                                        </div>
+                            <div class="col-sm-4">
+                                <p id="LastName-check" class="text-danger"></p>
+                            </div>
+                                                    </div>
+                                                        <div class="form-group row " style="margin-top:20px;">
+                                                            <label for="Email" class="col-sm-2 col-form-label">Email</label>
+                                                            <div class="col-sm-4">
+                                                                <input type="email" class="form-control modal-field" id="Email" placeholder="Enter Email" >
+                                                            </div>
+                            <div class="col-sm-4">
+                                <p id="Email-check" class="text-danger"></p>
+                            </div>
+                                                        </div>
+                                                        <div class="form-group row " style="margin-top:20px;">
+                                                            <label for="StartDate" class="col-sm-2 col-form-label">Start Date</label>
+                                                            <div class="col-sm-4">
+                                                                <input type="text" class="form-control" id="StartDate" readonly placeholder="Select Start Date">
+                                                            </div>
+                    <div class="col-sm-4">
+                        <p id="StartDate-check" class="text-danger"></p>
+                    </div>
+                                                        </div>
+                                                        <div class="form-group row " style="margin-top:20px;">
+                                                            <label for="EndDate" class="col-sm-2 col-form-label">End Date</label>
+                                                            <div class="col-sm-4">
+                                                            <input type="text" class="form-control" id="EndDate" readonly placeholder="Select End Date">
+                                                            </div>
+                    <div class="col-sm-4">
+                        <p id="EndDate-check" class="text-danger"></p>
+                    </div>
+                        </div>
+                <div class="form-group row " style="margin-top:20px;">
+                    <label for="Remarks" class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-4">
+                        <input type="button" class="btn btn-primary" id="BtnSubmit" value="Submit" />
+                    </div>
+                                
+                    </div>
+                                            </div>
+    
+    @section scripts {
+                        <script>
+            
+            function validateForm(){
+                var erros=0;
+                $("#Leavetype" + "-check").text('');
+                $("#FirstName" + "-check").text('');
+                $("#LastName" + "-check").text('');
+                $("#Email" + "-check").text('');
+                $("#StartDate" + "-check").text('');
+                $("#EndDate" + "-check").text('');
+            
+            if ($("#Leavetype").val().trim()==''){
+                erros++;
+                $("#Leavetype" + "-check").text('Select Leave type');
+            }
+            if ($("#FirstName").val().trim() == '') {
+                erros++;
+                $("#FirstName" + "-check").text('First name is missing');
+            }
+            if ($("#LastName").val().trim() == '') {
+                erros++;
+                $("#LastName" + "-check").text('Last name is missing');
+            }
+            if (validateEmail($("#Email").val())==false) {
+                erros++;
+                $("#Email" + "-check").text('Invalid email');
+            }
+                
+            if ($("#StartDate").val() == '') {
+                erros++;
+                $("#StartDate" + "-check").text('Start date is missing');
+            }
+            if ($("#EndDate").val() == '') {
+                erros++;
+                $("#EndDate" + "-check").text('End date is missing');
+            }
+
+            if(erros>0)
+                return false;
+
+            
+                return true;
+            }
+
+            $(document).ready(function () {
+
+          
+                $("#leavesview_partial").load("/Leave/GetLeavesApplied");
+                $("#BtnSubmit").click(function () {
+                   
+                    if (validateForm()) {
+
+                        var url = 'https://localhost:7290/Leave/AddLeave';
+                        var formData = new FormData();
+                        formData.append("FirstName", $("#FirstName").val());
+                        formData.append("LastName", $("#LastName").val());
+                        formData.append("Email", $("#Email").val());
+                        formData.append("Leavetype", $("#Leavetype").val());
+                        formData.append("StartDate", $("#StartDate").val());
+                        formData.append("EndDate", $("#EndDate").val());
+
+                        $.ajax({
+                           
+
+                            url:url,
+                            type: 'POST',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                           
+
+                            success: function (data) {
+                                // handle success callback
+                                if (data.result === 'PASS'){
+                                $("#leavesview_partial").load("/Leave/GetLeavesApplied");
+                                        }
+                            
+                            }
+                        });
+
+
+                    }
+                });
+
+            $("#Leavetype").change(function () {
+                if ($(this).val() == '')
+                    $("#" + $(this).attr("id") + "-check").text('Select Leave type');
+                else
+                    $("#" + $(this).attr("id") + "-check").text('');
+               });
+
+            
+               $("#FirstName").change(function () {
+
+                if ($(this).val().trim() == '')
+                    $("#" + $(this).attr("id") + "-check").text('First name is missing');
+                else
+                    $("#" + $(this).attr("id") + "-check").text('');
+              });
+            
+              $("#LastName").change(function () {
+
+                if ($(this).val().trim() == '')
+                    $("#" + $(this).attr("id") + "-check").text('Last name is missing');
+                else
+                    $("#" + $(this).attr("id") + "-check").text('');
+              });
+
+            $("#Email").change(function () {
+
+            if ($(this).val().trim() == '')
+                $("#" + $(this).attr("id") + "-check").text('Email is missing');
+            else 
+            {
+                if (validateEmail($(this).val().trim())==false)
+                    $("#" + $(this).attr("id") + "-check").text('Invalid email')
+                else
+                    $("#" + $(this).attr("id") + "-check").text('');
+            }
+             });
+
+            
+            $("#StartDate").datepicker({
+                dateFormat: 'dd/mm/yy', maxDate: "+1m +0w", minDate: "+0m +0w"
+                    });
+            $("#EndDate").datepicker({ dateFormat: 'dd/mm/yy', maxDate: "+1m +0w", minDate: "+0m +0w" });
+            $("#StartDate").on("change", function () {
+                var selected = $(this).val();
+            $("#EndDate").val('');
+                $("#EndDate").datepicker("option", "minDate", selected);  
+            });
+            
+           });
+           </script>
+ 
+}
+    
+
+
+               
